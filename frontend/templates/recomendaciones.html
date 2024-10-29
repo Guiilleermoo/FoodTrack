@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendaciones Personalizadas - FoodTrack</title>
+
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(120deg, #b3ffab, #12fff7);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #34495e;
+            font-size: 2.5em;
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar {
+            width: 100%;
+            background-color: #16a085;
+            display: flex;
+            justify-content: center;
+        }
+
+        .navbar a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: #1abc9c;
+        }
+
+        .recommendation-container {
+            width: 90%;
+            max-width: 800px;
+            background-color: white;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .recommendation {
+            margin: 40px 0; /* Espaciado superior e inferior */
+            padding: 20px; /* Espaciado interno */
+            border-radius: 10px;
+            background-color: #f9f9f9; /* Color de fondo más claro */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .divider {
+            border-top: 4px solid #16a085; /* Línea divisoria gruesa */
+            margin: 20px 0; /* Espaciado vertical */
+        }
+
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .product-item {
+            width: 30%;
+            background-color: #fff; /* Color de fondo blanco */
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .product-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de Navegación -->
+    <div class="navbar">
+        <a href="seguimiento.html">Inicio</a>
+        <a href="registroAlimentos.html">Registro de Alimentos</a>
+        <a href="recomendaciones.html">Recomendaciones</a>
+    </div>
+
+    <h1>Recomendaciones Personalizadas</h1>
+
+    <div class="recommendation-container">
+        <div class="recommendation">
+            <h2>¡Come más fruta!</h2>
+            <div class="product-list" id="fruitProducts">
+                <!-- Productos de frutas aparecerán aquí -->
+            </div>
+        </div>
+
+        <div class="divider"></div> <!-- Línea divisoria -->
+
+        <div class="recommendation">
+            <h2>¡Incluye más verduras en tu dieta!</h2>
+            <div class="product-list" id="vegetableProducts">
+                <!-- Productos de verduras aparecerán aquí -->
+            </div>
+        </div>
+
+        <div class="divider"></div> <!-- Línea divisoria -->
+
+        <div class="recommendation">
+            <h2>¡No olvides los productos lácteos!</h2>
+            <div class="product-list" id="dairyProducts">
+                <!-- Productos lácteos aparecerán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para obtener productos de frutas de la API
+        async function fetchFruitProducts() {
+            const response = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=fruits naturels&sort_by=popularity&json=true`);
+            const data = await response.json();
+            displayFruitProducts(data.products);
+        }
+
+        // Función para mostrar productos de frutas
+        function displayFruitProducts(products) {
+            const fruitProductsDiv = document.getElementById('fruitProducts');
+            fruitProductsDiv.innerHTML = ''; // Reiniciar contenido
+
+            if (products && products.length > 0) {
+                products.slice(0, 3).forEach(product => {
+                    const productItem = document.createElement('div');
+                    productItem.className = 'product-item';
+                    
+                    const productName = product.product_name || "Nombre no disponible";
+                    const imageUrl = product.image_url || ""; // Obtener imagen del producto
+
+                    productItem.innerHTML = `
+                        <img class="product-image" src="${imageUrl}" alt="${productName}">
+                        <h3>${productName}</h3>
+                    `;
+                    fruitProductsDiv.appendChild(productItem);
+                });
+            } else {
+                fruitProductsDiv.innerHTML = '<p>No se encontraron frutas recomendadas.</p>';
+            }
+        }
+
+        // Función para obtener productos de verduras de la API
+        async function fetchVegetableProducts() {
+            const response = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=verdura&sort_by=popularity&json=true`);
+            const data = await response.json();
+            displayVegetableProducts(data.products);
+        }
+
+        // Función para mostrar productos de verduras
+        function displayVegetableProducts(products) {
+            const vegetableProductsDiv = document.getElementById('vegetableProducts');
+            vegetableProductsDiv.innerHTML = ''; // Reiniciar contenido
+
+            if (products && products.length > 0) {
+                products.slice(0, 3).forEach(product => {
+                    const productItem = document.createElement('div');
+                    productItem.className = 'product-item';
+                    
+                    const productName = product.product_name || "Nombre no disponible";
+                    const imageUrl = product.image_url || ""; // Obtener imagen del producto
+
+                    productItem.innerHTML = `
+                        <img class="product-image" src="${imageUrl}" alt="${productName}">
+                        <h3>${productName}</h3>
+                    `;
+                    vegetableProductsDiv.appendChild(productItem);
+                });
+            } else {
+                vegetableProductsDiv.innerHTML = '<p>No se encontraron verduras recomendadas.</p>';
+            }
+        }
+
+        // Función para obtener productos lácteos de la API
+        async function fetchDairyProducts() {
+            const response = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=lácteo&sort_by=popularity&json=true`);
+            const data = await response.json();
+            displayDairyProducts(data.products);
+        }
+
+        // Función para mostrar productos lácteos
+        function displayDairyProducts(products) {
+            const dairyProductsDiv = document.getElementById('dairyProducts');
+            dairyProductsDiv.innerHTML = ''; // Reiniciar contenido
+
+            if (products && products.length > 0) {
+                products.slice(0, 3).forEach(product => {
+                    const productItem = document.createElement('div');
+                    productItem.className = 'product-item';
+                    
+                    const productName = product.product_name || "Nombre no disponible";
+                    const imageUrl = product.image_url || ""; // Obtener imagen del producto
+
+                    productItem.innerHTML = `
+                        <img class="product-image" src="${imageUrl}" alt="${productName}">
+                        <h3>${productName}</h3>
+                    `;
+                    dairyProductsDiv.appendChild(productItem);
+                });
+            } else {
+                dairyProductsDiv.innerHTML = '<p>No se encontraron productos lácteos recomendados.</p>';
+            }
+        }
+
+        // Llamar a las funciones para obtener productos al cargar la página
+        window.onload = function() {
+            fetchFruitProducts();
+            fetchVegetableProducts();
+            fetchDairyProducts();
+        };
+    </script>
+</body>
+</html>
+

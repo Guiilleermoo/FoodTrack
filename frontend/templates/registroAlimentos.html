@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Alimentos - FoodTrack</title>
+
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(120deg, #b3ffab, #12fff7);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #34495e;
+            font-size: 2.5em;
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar {
+            width: 100%;
+            background-color: #16a085;
+            display: flex;
+            justify-content: center;
+        }
+
+        .navbar a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: #1abc9c;
+        }
+
+        .form-container {
+            width: 90%;
+            max-width: 800px;
+            background-color: white;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .form-group input[type="submit"],
+        .form-group button {
+            background-color: #16a085;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group input[type="submit"]:hover,
+        .form-group button:hover {
+            background-color: #1abc9c;
+        }
+
+        .food-list {
+            margin-top: 30px;
+            max-width: 800px;
+            width: 90%;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .food-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .food-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-results {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-item button {
+            background-color: #16a085;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .result-item button:hover {
+            background-color: #1abc9c;
+        }
+
+        .result-image {
+            width: 50px; /* Ajustar el tamaño de la imagen */
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de Navegación -->
+    <div class="navbar">
+        <a href="seguimiento.html">Inicio</a>
+        <a href="registroAlimentos.html">Registro de Alimentos</a>
+        <a href="recomendaciones.html">Recomendaciones</a>
+    </div>
+
+    <h1>Registro de Alimentos</h1>
+
+    <div class="form-container">
+        <form id="searchForm">
+            <div class="form-group">
+                <label for="searchQuery">Buscar Alimento</label>
+                <input type="text" id="searchQuery" name="searchQuery" required>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Cantidad (gramos)</label>
+                <input type="number" id="quantity" name="quantity" min="1" max="1000" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Buscar">
+            </div>
+        </form>
+        
+        <div class="search-results" id="searchResults">
+            <h2>Resultados de Búsqueda</h2>
+            <!-- Resultados de búsqueda aparecerán aquí -->
+        </div>
+
+        <div class="food-list" id="foodList">
+            <h2>Alimentos Registrados</h2>
+            <!-- Lista de Alimentos -->
+        </div>
+    </div>
+
+    <script>
+        // Arreglo para almacenar los alimentos
+        const foods = [];
+
+        // Función para buscar alimentos en la API
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('searchQuery').value;
+            const quantity = document.getElementById('quantity').value; // Obtener cantidad
+            searchFood(query, quantity);
+        });
+
+        // Función para buscar alimentos
+        async function searchFood(query, quantity) {
+            const response = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${query}&sort_by=popularity&json=true`);
+            const data = await response.json();
+            displaySearchResults(data.products, quantity);
+        }
+
+        // Función para mostrar los resultados de búsqueda
+        function displaySearchResults(products, quantity) {
+            const searchResultsDiv = document.getElementById('searchResults');
+            searchResultsDiv.innerHTML = '<h2>Resultados de Búsqueda</h2>'; // Reiniciar contenido
+
+            if (products && products.length > 0) {
+                products.slice(0, 10).forEach(product => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    const productName = product.product_name || "Nombre no disponible";
+                    const calories = product.nutriments ? product.nutriments["energy-kcal_100g"] : "No disponible";
+                    const ecoscore = product.ecoscore_grade || "No disponible"; // Obtener ecoscore
+                    const imageUrl = product.image_url || ""; // Obtener imagen del producto
+
+                    // Calcular calorías para la cantidad dada
+                    const caloriesForQuantity = calories !== "No disponible" ? ((calories * quantity) / 100).toFixed(2) : "No disponible";
+
+                    resultItem.innerHTML = `
+                        <div>
+                            <img class="result-image" src="${imageUrl}" alt="${productName}">
+                            <span>${productName} - ${quantity}g - ${caloriesForQuantity} kcal - EcoScore: ${ecoscore}</span>
+                        </div>
+                        <button onclick="addFood('${productName}', ${quantity}, ${caloriesForQuantity}, '${ecoscore}', '${imageUrl}')">Agregar</button>
+                    `;
+                    searchResultsDiv.appendChild(resultItem);
+                });
+            } else {
+                searchResultsDiv.innerHTML += '<p>No se encontraron resultados.</p>';
+            }
+        }
+
+        // Función para agregar un alimento a la lista
+        function addFood(name, quantity, calories, ecoscore, image) {
+            const food = { name, quantity, calories, ecoscore, image };
+            foods.push(food);
+            displayFoods();
+        }
+
+        // Función para mostrar los alimentos en la lista
+        function displayFoods() {
+            const foodListDiv = document.getElementById('foodList');
+            foodListDiv.innerHTML = '<h2>Alimentos Registrados</h2>'; // Reiniciar contenido
+
+            foods.forEach((food, index) => {
+                const foodItem = document.createElement('div');
+                foodItem.className = 'food-item';
+
+                foodItem.innerHTML = `
+                    <img class="result-image" src="${food.image}" alt="${food.name}">
+                    <span>${food.name} - ${food.quantity}g - ${food.calories} kcal - EcoScore: ${food.ecoscore}</span>
+                    <div>
+                        <button onclick="deleteFood(${index})">Eliminar</button>
+                    </div>
+                `;
+                foodListDiv.appendChild(foodItem);
+            });
+        }
+
+        // Función para eliminar un alimento
+        function deleteFood(index) {
+            foods.splice(index, 1);
+            displayFoods();
+        }
+    </script>
+</body>
+</html>
+
