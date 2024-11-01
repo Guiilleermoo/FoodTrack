@@ -6,13 +6,12 @@ WORKDIR /app
 
 # Copia los archivos necesarios
 COPY requirements.txt requirements.txt
-COPY app.py app.py
 
 # Instala las dependencias
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
-# Expone el puerto en el que corre la aplicación
-EXPOSE 5000
+# Copia el resto del código de tu aplicación
+COPY . .
 
 # Comando para ejecutar la aplicación
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]
