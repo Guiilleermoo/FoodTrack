@@ -2,16 +2,22 @@ version: '3'
 
 services:
   flask_service:
-    build: ./flask_service
-    container_name: flask_service
+    build: ./microservicio-python
+    container_name: microservicio-python
     ports:
       - "5000:5000"
+    depends_on:
+      - db
 
   express_service:
-    build: ./express_service
-    container_name: express_service
+    build: ./microservicio-node
+    container_name: microservicio-node
     ports:
       - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/microservicioNode
+    depends_on:
+      - mongo
 
   frontend:
     build: ./frontend
@@ -23,8 +29,32 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./api-controller/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - flask_service
       - express_service
       - frontend
+
+  db:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: microservicioPythonDB
+      MYSQL_USER: python
+      MYSQL_PASSWORD: python
+    volumes:
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+
+volumes:
+  db_data:
