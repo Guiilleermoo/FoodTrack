@@ -1,0 +1,82 @@
+services:
+  flask_service:
+    build: ./microservicio-python
+    container_name: microservicio-python
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    networks:
+      - backend
+
+  express_service:
+    build: ./microservicio-node
+    container_name: microservicio-node
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/microservicioNode
+    depends_on:
+      - mongo
+    expose:
+      - "80"
+    networks:
+      - backend
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "80:80"
+    networks:
+      - frontend_network
+    depends_on:
+      - flask_service
+      - express_service
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    volumes:
+      - ./api-controller/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:80"
+    depends_on:
+      - frontend
+    networks:
+      - frontend_network
+      - backend
+
+  db:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: microservicioPythonDB
+      MYSQL_USER: python
+      MYSQL_PASSWORD: python
+    volumes:
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - backend
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+
+volumes:
+  db_data:
+
+networks:
+  frontend_network:
+    driver: bridge
+  backend:
+    driver: bridge
