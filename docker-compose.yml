@@ -46,7 +46,7 @@ services:
     networks:
       - frontend_network
       - backend
-
+      
   db:
     image: mysql:5.7
     container_name: mysql
@@ -80,3 +80,6 @@ networks:
     driver: bridge
   backend:
     driver: bridge
+
+volumes:
+  db_data:

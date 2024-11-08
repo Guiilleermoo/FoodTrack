@@ -1,16 +1,8 @@
-from flask import Flask, jsonif, request
-from flask_mysqldb import MySQL
+from config import create_app
+from routes import bp as routes_bp
 
-app = Flask(__name__)
-mysql = MySQL(app)
+app = create_app()
+app.register_blueprint(routes_bp)
 
-# Crear usuario
-# Buscar usuario por gmail y contraseña
-# Eliminar usuario
-
-# Crear Alimento
-# Actualizar Alimento
-# Eliminar Alimento
-
-# Crear Registro de Consumo
-# Eliminar Registro de Consumo
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000, debug=True)

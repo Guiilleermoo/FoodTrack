@@ -1,16 +1,17 @@
-// Conexión a MongoDB
+const express = require('express');
+const mongoose = require('mongoose');
+const Recomendacion = require('./models/Recomendacion');
+const Evolucion = require('./models/Evolucion');
+const logger = require('./logger');
 
-// Schemas MongoDB
+const app = express();
+app.use(express.json());
 
-// Crear Recomendación Personalizada
-// Consultar Recomendaciones Personalziadas de un Usuario
+const PORT = 3000;
 
-// Crear información de la Evaluación de un Usuario
-// Actualizar información de la Evaluación de un Usuario
-// Consultar información de la Evaluación de un Usuario
+// Obtener la URI de conexión de la variable de entorno
+const mongoURI = process.env.MONGO_URI;
 
-<<<<<<< Updated upstream
-=======
 // Conectar a MongoDB
 mongoose.connect(mongoURI)
   .then(() => {
@@ -97,6 +98,7 @@ app.delete('/recomendaciones/:id', async (req, res) => {
 
 
 /**********************EVOLUCION********************/
+
 // Crear una Evolución
 app.post('/evoluciones', async (req, res) => {
   const { usuarioId, progreso, caloriasConsumidas, alimentoMasConsumido, estadisticas } = req.body;
@@ -195,4 +197,3 @@ app.delete('/evoluciones/:id', async (req, res) => {
 app.listen(PORT, () => {
   logger.info(`Servidor escuchando en el puerto ${PORT}`);
 });
->>>>>>> Stashed changes
