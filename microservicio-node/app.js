@@ -99,6 +99,100 @@ app.delete('/recomendaciones/:id', async (req, res) => {
 
 /**********************EVOLUCION********************/
 
+// Crear una Evolución
+app.post('/evoluciones', async (req, res) => {
+  const { usuarioId, progreso, caloriasConsumidas, alimentoMasConsumido, estadisticas } = req.body;
+
+  if (!req.body) {
+    logger.warn('El cuerpo de la solicitud está vacío.');
+    return res.status(400).send({ error: 'El cuerpo de la solicitud está vacío.' });
+  }
+
+  try {
+    const evolucion = new Evolucion({
+      usuarioId,
+      progreso,
+      caloriasConsumidas,
+      alimentoMasConsumido,
+      estadisticas
+    });
+    await evolucion.save();
+    logger.info(`Evolución creada: ${JSON.stringify(evolucion)}`);
+    res.status(201).send(evolucion);
+  } catch (error) {
+    logger.error('Error al crear la evolución:', error);
+    res.status(400).send({ error: 'Error al crear la evolución' });
+  }
+});
+
+// Leer todas las evoluciones de un usuario (usuarioId)
+app.get('/evoluciones/:usuarioId', async (req, res) => {
+  const usuarioId = req.params.usuarioId;
+
+  try {
+    const evoluciones = await Evolucion.find({ usuarioId });
+    if (!evoluciones || evoluciones.length === 0) {
+      logger.warn('No se encontraron evoluciones para el usuarioId:', usuarioId);
+      return res.status(404).send({ error: 'No se encontraron evoluciones.' });
+    }
+    logger.info('Evoluciones encontradas para el usuarioId:', usuarioId);
+    res.send(evoluciones);
+  } catch (error) {
+    logger.error('Error al obtener las evoluciones:', error);
+    res.status(500).send(error);
+  }
+});
+
+// Leer una evolución específica por ID
+app.get('/evoluciones/:usuarioId/:id', async (req, res) => {
+  const { usuarioId, id } = req.params;
+
+  try {
+    const evolucion = await Evolucion.findOne({ _id: id, usuarioId });
+    if (!evolucion) {
+      logger.warn('Evolución no encontrada para el usuarioId y el id:', usuarioId, id);
+      return res.status(404).send({ error: 'Evolución no encontrada.' });
+    }
+    logger.info('Evolución encontrada:', JSON.stringify(evolucion));
+    res.send(evolucion);
+  } catch (error) {
+    logger.error('Error al obtener la evolución por ID:', error);
+    res.status(500).send(error);
+  }
+});
+
+// Actualizar una Evolución
+app.patch('/evoluciones/:id', async (req, res) => {
+  try {
+    const evolucion = await Evolucion.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!evolucion) {
+      logger.warn('Evolución no encontrada para el id:', req.params.id);
+      return res.status(404).send({ error: 'Evolución no encontrada.' });
+    }
+    logger.info(`Evolución actualizada: ${JSON.stringify(evolucion)}`);
+    res.send(evolucion);
+  } catch (error) {
+    logger.error('Error al actualizar la evolución:', error);
+    res.status(400).send(error);
+  }
+});
+
+// Eliminar una Evolución
+app.delete('/evoluciones/:id', async (req, res) => {
+  try {
+    const evolucion = await Evolucion.findByIdAndDelete(req.params.id);
+    if (!evolucion) {
+      logger.warn('Evolución no encontrada para el id:', req.params.id);
+      return res.status(404).send({ error: 'Evolución no encontrada.' });
+    }
+    logger.info(`Evolución eliminada: ${JSON.stringify(evolucion)}`);
+    res.send(evolucion);
+  } catch (error) {
+    logger.error('Error al eliminar la evolución:', error);
+    res.status(500).send(error);
+  }
+});
+
 // Iniciar el servidor
 app.listen(PORT, () => {
   logger.info(`Servidor escuchando en el puerto ${PORT}`);

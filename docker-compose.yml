@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   flask_service:
     build: ./microservicio-python
@@ -8,6 +6,8 @@ services:
       - "5000:5000"
     depends_on:
       - db
+    networks:
+      - backend
 
   express_service:
     build: ./microservicio-node
@@ -18,23 +18,35 @@ services:
       - MONGO_URI=mongodb://mongo:27017/microservicioNode
     depends_on:
       - mongo
+    expose:
+      - "80"
+    networks:
+      - backend
 
   frontend:
     build: ./frontend
     container_name: frontend
+    ports:
+      - "80:80"
+    networks:
+      - frontend_network
+    depends_on:
+      - flask_service
+      - express_service
 
   nginx:
     image: nginx:alpine
     container_name: nginx
-    ports:
-      - "80:80"
     volumes:
       - ./api-controller/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:80"
     depends_on:
-      - flask_service
-      - express_service
       - frontend
-
+    networks:
+      - frontend_network
+      - backend
+      
   db:
     image: mysql:5.7
     container_name: mysql
@@ -49,12 +61,25 @@ services:
       - db_data:/var/lib/mysql
     ports:
       - "3306:3306"
+    networks:
+      - backend
 
   mongo:
     image: mongo:latest
     container_name: mongo
     ports:
       - "27017:27017"
+    networks:
+      - backend
+
+volumes:
+  db_data:
+
+networks:
+  frontend_network:
+    driver: bridge
+  backend:
+    driver: bridge
 
 volumes:
   db_data:
