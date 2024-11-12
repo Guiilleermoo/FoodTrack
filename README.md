@@ -23,3 +23,8 @@
 2 - Implementacion de la API controller
 
 3 - Desarrollo del frontend
+
+# Generar build de la applicación react
+yarn add web-vitals
+
+yarn build

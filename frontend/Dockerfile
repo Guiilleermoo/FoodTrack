@@ -1,26 +1,33 @@
-# Usa la imagen oficial de Node.js para construir la app React
-FROM node:18 AS build
+# build environment
+FROM node:18-alpine as build
 
-# Define el directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copia el package.json y package-lock.json
-COPY package.json package-lock.json ./
+# Copia los archivos necesarios para instalar dependencias
+COPY package.json yarn.lock ./
 
-# Instala las dependencias del proyecto
-RUN npm install
+# Install Yarn globally in the build stage
+RUN npm install -g yarn --force
 
-# Copia el resto de los archivos del frontend
-COPY . .
+# Verifica si Yarn está instalado
+RUN yarn --version
 
-# Construye la aplicación React para producción
-RUN npm run build
+# Instala las dependencias
+RUN yarn install --frozen-lockfile
 
-# Usa una imagen ligera para servir el contenido estático
-FROM nginx:alpine
+# Verificar el contenido de la carpeta antes de hacer el build
+RUN ls -l
 
-# Copia los archivos generados en la etapa de build al contenedor de Nginx
-COPY --from=build /app/build /usr/share/nginx/html
+# Copia el resto de los archivos (fuentes de la aplicación)
+COPY . ./
+
+# Ejecuta la construcción
+RUN yarn build
+
+# Usar Nginx para servir la aplicación construida
+FROM nginx:stable-alpine
+
+COPY --from=build app/build /usr/share/nginx/html
 
 # Exponer el puerto 80
 EXPOSE 80
