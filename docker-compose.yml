@@ -27,29 +27,16 @@ services:
     build: ./frontend
     container_name: frontend
     volumes:
-      - ./frontend/build:/usr/share/nginx/html
+      - ./api-controller/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+        - "8000:80"
     depends_on:
       - flask_service
       - express_service
     networks:
       - frontend_network
-    expose:
-      - "80"
-
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
-    volumes:
-      - ./api-controller/nginx.conf:/etc/nginx/nginx.conf
-      - ./frontend/build:/usr/share/nginx/html
-    ports:
-      - "8080:80"
-    depends_on:
-      - frontend
-    networks:
-      - frontend_network
       - backend
-      
+   
   db:
     image: mysql:5.7
     container_name: mysql

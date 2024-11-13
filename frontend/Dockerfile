@@ -1,36 +1,25 @@
-# build environment
-FROM node:18-alpine as build
-
+# Etapa de construcción de la aplicación React
+FROM node:12-alpine3.12 AS build
 WORKDIR /app
 
-# Copia los archivos necesarios para instalar dependencias
-COPY package.json yarn.lock ./
+# Copiar el package.json y package-lock.json (si existe)
+COPY package.json ./
+RUN npm install
 
-# Install Yarn globally in the build stage
-RUN npm install -g yarn --force
+# Copiar el resto de los archivos de la aplicación
+COPY . .
 
-# Verifica si Yarn está instalado
-RUN yarn --version
+# Construir la aplicación React
+RUN npm run build
 
-# Instala las dependencias
-RUN yarn install --frozen-lockfile
+# Etapa de producción con Nginx
+FROM nginx:1.19.0-alpine AS prod-stage
 
-# Verificar el contenido de la carpeta antes de hacer el build
-RUN ls -l
-
-# Copia el resto de los archivos (fuentes de la aplicación)
-COPY . ./
-
-# Ejecuta la construcción
-RUN yarn build
-
-# Usar Nginx para servir la aplicación construida
-FROM nginx:stable-alpine
-
-COPY --from=build app/build /usr/share/nginx/html
+# Copiar los archivos de la construcción al directorio adecuado de Nginx
+COPY --from=build /app/build /usr/share/nginx/html
 
 # Exponer el puerto 80
 EXPOSE 80
 
-# Inicia Nginx cuando el contenedor se ejecute
-CMD ["nginx", "-g", "daemon off;"]
+# Iniciar Nginx cuando se ejecute el contenedor
+CMD [ "nginx", "-g", "daemon off;" ]
