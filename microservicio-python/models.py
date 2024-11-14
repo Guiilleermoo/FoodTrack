@@ -24,15 +24,13 @@ class Alimento(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nombreAlimento = db.Column(db.String(80), nullable=False)
-    cantidad = db.Column(db.Double, nullable=False)
-    calorias = db.Column(db.Integer, nullable=False)
     nutriScore = db.Column(db.String(1))
 
     def __repr__(self):
         return f'<Alimento {self.nombreAlimento}>'
     
     def to_dict(self):
-        return {'id': self.id, 'name': self.nombreAlimento, 'cantidad': self.cantidad, 'calorias': self.calorias, 'nutriScore': self.nutriScore}
+        return {'id': self.id, 'name': self.nombreAlimento, 'nutriScore': self.nutriScore}
 
 # Tabla de Registros de Consumo
 class Consumo(db.Model):
@@ -43,10 +41,11 @@ class Consumo(db.Model):
     usuarioID = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
     fechaConsumo = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
     cantidad = db.Column(db.Double, nullable=False)
+    calorias = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return f'<Consumo {self.alimentoID} por Usuario {self.usuarioID}>'
 
     
     def to_dict(self):
-        return {'id': self.id, 'alimentoID': self.alimentoID, 'usuarioID': self.usuarioID, 'fechaConsumo': self.fechaConsumo, 'cantidad': self.cantidad}
+        return {'id': self.id, 'alimentoID': self.alimentoID, 'usuarioID': self.usuarioID, 'fechaConsumo': self.fechaConsumo, 'cantidad': self.cantidad, 'calorias': self.calorias}

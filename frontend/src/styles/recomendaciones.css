@@ -1,0 +1,69 @@
+/* Aseguramos que las imágenes de los productos sean más pequeñas */
+.product-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.product-image {
+  width: 150px; /* Ajustamos el tamaño de las imágenes */
+  height: 150px;
+  object-fit: contain; /* Mantener la proporción de las imágenes */
+  margin-bottom: 10px;
+}
+
+/* Estilo para el contenedor de recomendaciones */
+.recommendation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Restablecer márgenes y paddings por defecto */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+
+/* Estilo para las divisores entre secciones */
+.divider {
+  width: 80%;
+  height: 2px;
+  background-color: #16a085;
+  margin: 20px 0;
+}
+
+/* Estilo para cada sección de recomendación */
+.recommendation {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* Títulos de las recomendaciones */
+.recommendation h2 {
+  font-size: 1.8em;
+  color: #16a085;
+  margin-bottom: 20px;
+}
+
+.container {
+  max-height: 100vh;
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden; /* Evitar desbordamiento horizontal */
+}

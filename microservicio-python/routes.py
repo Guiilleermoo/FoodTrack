@@ -111,22 +111,14 @@ def crearAlimento():
     logging.debug("Datos recibidos para crear alimento: %s", data)
 
      # Verifica que se reciban los datos correctamente
-    if not data or not all(key in data for key in ['nombreAlimento', 'cantidad', 'calorias']):
+    if not data or not all(key in data for key in ['nombreAlimento']):
         logging.error("Faltan datos requeridos para crear alimento")
         return jsonify({"error": "Faltan datos requeridos"}), 400
 
     nombreAlimento = data.get('nombreAlimento')
-    cantidad = data.get('cantidad')
-    calorias = data.get('calorias')
-    calorias = data.get('calorias')
     nutriScore = data.get('nutriScore', 'E')
 
-    # Validar que cantidad y calorias sean números
-    if not isinstance(cantidad, (int, float)) or not isinstance(calorias, (int, float)):
-        logging.error("Cantidad y calorías deben ser numéricas")
-        return jsonify({"error": "Cantidad y calorías deben ser numéricas"}), 400
-    
-    alimentoNuevo = Alimento(nombreAlimento = nombreAlimento, cantidad = cantidad, calorias = calorias, nutriScore = nutriScore)
+    alimentoNuevo = Alimento(nombreAlimento = nombreAlimento, nutriScore = nutriScore)
     db.session.add(alimentoNuevo)
 
     try:
@@ -160,16 +152,6 @@ def actualizarAlimento(idAlimento):
     # Actualiza los campos si están presentes en la solicitud
     if 'nombreAlimento' in data:
         alimento.nombreAlimento = data['nombreAlimento']
-    if 'cantidad' in data:
-        if not isinstance(data['cantidad'], (int, float)):
-            logging.error("Cantidad debe ser numérica")
-            return jsonify({"error": "Cantidad debe ser numérica"}), 400
-        alimento.cantidad = data['cantidad']
-    if 'calorias' in data:
-        if not isinstance(data['calorias'], (int, float)):
-            logging.error("Calorías deben ser numéricas")
-            return jsonify({"error": "Calorías deben ser numéricas"}), 400
-        alimento.calorias = data['calorias']
     if 'nutriScore' in data:
         alimento.nutriScore = data['nutriScore']
 
@@ -219,20 +201,26 @@ def crearRegistroConsumo():
     logging.debug("Datos recibidos para crear registro de consumo: %s", data)
 
     # Verifica que se reciban los datos correctamente
-    if not data or not all(key in data for key in ['alimentoID', 'usuarioID', 'cantidad']):
+    if not data or not all(key in data for key in ['alimentoID', 'usuarioID', 'cantidad', 'calorias']):
         logging.error("Faltan datos requeridos para crear el registro de consumo")
         return jsonify({"error": "Faltan datos requeridos"}), 400
 
     alimentoID = data.get('alimentoID')
     usuarioID = data.get('usuarioID')
     cantidad = data.get('cantidad')
+    calorias = data.get('calorias')
 
     # Validar que cantidad sea numérica
     if not isinstance(cantidad, (int, float)):
         logging.error("Cantidad debe ser numérica")
         return jsonify({"error": "Cantidad debe ser numérica"}), 400
 
-    nuevoConsumo = Consumo(alimentoID=alimentoID, usuarioID=usuarioID, cantidad=cantidad)
+    # Validar que calorías sea numérica
+    if not isinstance(calorias, (int, float)):
+        logging.error("Calorías debe ser numérica")
+        return jsonify({"error": "Calorías debe ser numérica"}), 400
+
+    nuevoConsumo = Consumo(alimentoID=alimentoID, usuarioID=usuarioID, cantidad=cantidad, calorias=calorias)
     db.session.add(nuevoConsumo)
 
     try:

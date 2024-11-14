@@ -1,0 +1,60 @@
+/* /src/styles.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(120deg, #b3ffab, #12fff7);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  h1 {
+    color: #34495e;
+    font-size: 2.5em;
+    margin-top: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .statistics-container {
+    width: 90%;
+    max-width: 800px;
+    background-color: white;
+    padding: 30px;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    z-index: 1;
+  }
+  
+  .section {
+    margin-bottom: 25px;
+    padding: 10px;
+  }
+  
+  .section h2 {
+    color: #16a085;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #16a085;
+    padding-bottom: 5px;
+  }
+  
+  .average-calories {
+    font-size: 1.5em;
+    color: #34495e;
+    background-color: #f2f2f2;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chart-container {
+    width: 100%;
+    margin: auto;
+  }
+  
