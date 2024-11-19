@@ -111,12 +111,6 @@ const Recomendaciones = () => {
 
   return (
     <div className="container"> {/* Aquí usamos el contenedor para manejar el desbordamiento */}
-      <div className="navbar">
-        <a href="/seguimiento">Inicio</a>
-        <a href="/registroAlimentos">Registro de Alimentos</a>
-        <a href="/recomendaciones">Recomendaciones</a>
-      </div>
-
       <h1>Recomendaciones Personalizadas</h1>
 
       <div className="recommendation-container">

@@ -79,27 +79,27 @@ const Seguimiento = () => {
       flexDirection: 'column',
       alignItems: 'center',
       background: 'linear-gradient(120deg, #b3ffab, #12fff7)',
-      minHeight: '100vh',
-      marginTop: '100px'  // Aumenta el margen superior para empujar el contenido abajo
+      minHeight: 'calc(100vh - 80px)',  // Asegura que el contenido no sobrepase el header
+      paddingTop: '1600px', // Reduces el margen superior
     }}>
       <h1 style={{
         color: '#34495e',
-        fontSize: '2.5em',
-        marginTop: '20px',
+        fontSize: '3em',
+        marginTop: '10px',
         textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)'
       }}>Estadísticas de Usuario</h1>
 
       <div style={{
-        width: '90%',
-        maxWidth: '800px',
+        width: '95%',
+        maxWidth: '1000px',
         backgroundColor: 'white',
-        padding: '30px',
+        padding: '25px',
         margin: '20px 0',
         borderRadius: '10px',
-        boxShadow: '0 6px 12px rgba(0, 0, 0, 0.1)'
+        boxShadow: '0 6px 12px rgba(0, 0, 0, 0.1)',
       }}>
         {/* Gráfico de Consumo de Calorías por Día */}
-        <div style={{ marginBottom: '25px', padding: '10px' }}>
+        <div style={{ marginBottom: '20px', padding: '10px' }}>
           <h2 style={{
             color: '#16a085',
             fontSize: '1.8em',
@@ -107,7 +107,7 @@ const Seguimiento = () => {
             borderBottom: '2px solid #16a085',
             paddingBottom: '5px'
           }}>Consumo de Calorías por Día</h2>
-          <div style={{ width: '100%', maxWidth: '600px', margin: 'auto' }}>
+          <div style={{ width: '100%', maxWidth: '700px', margin: 'auto' }}>
             <canvas ref={caloriesChartRef}></canvas>
           </div>
         </div>
@@ -117,18 +117,18 @@ const Seguimiento = () => {
           fontSize: '1.5em',
           color: '#34495e',
           backgroundColor: '#f2f2f2',
-          padding: '15px',
+          padding: '12px',
           borderRadius: '8px',
           textAlign: 'center',
           marginBottom: '20px',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         }}>
           <h2>Calorías Promedio</h2>
           <p>2050 kcal</p>
         </div>
 
         {/* Gráfico de Alimentos Más Consumidos */}
-        <div style={{ marginBottom: '25px', padding: '10px' }}>
+        <div style={{ marginBottom: '20px', padding: '10px' }}>
           <h2 style={{
             color: '#16a085',
             fontSize: '1.8em',
@@ -136,13 +136,13 @@ const Seguimiento = () => {
             borderBottom: '2px solid #16a085',
             paddingBottom: '5px'
           }}>Alimentos Más Consumidos</h2>
-          <div style={{ width: '100%', maxWidth: '600px', margin: 'auto' }}>
+          <div style={{ width: '100%', maxWidth: '700px', margin: 'auto' }}>
             <canvas ref={mostConsumedChartRef}></canvas>
           </div>
         </div>
 
         {/* Gráfico de Alimentos Recomendados */}
-        <div style={{ marginBottom: '25px', padding: '10px' }}>
+        <div style={{ marginBottom: '20px', padding: '10px' }}>
           <h2 style={{
             color: '#16a085',
             fontSize: '1.8em',
@@ -150,13 +150,13 @@ const Seguimiento = () => {
             borderBottom: '2px solid #16a085',
             paddingBottom: '5px'
           }}>Alimentos Recomendados</h2>
-          <div style={{ width: '100%', maxWidth: '600px', margin: 'auto' }}>
+          <div style={{ width: '100%', maxWidth: '700px', margin: 'auto' }}>
             <canvas ref={recommendedChartRef}></canvas>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Seguimiento;

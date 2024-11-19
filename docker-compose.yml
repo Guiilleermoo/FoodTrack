@@ -18,8 +18,6 @@ services:
       - MONGO_URI=mongodb://mongo:27017/microservicioNode
     depends_on:
       - mongo
-    expose:
-      - "80"
     networks:
       - backend
 
@@ -27,7 +25,7 @@ services:
     build: ./frontend
     container_name: frontend
     volumes:
-      - ./api-controller/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
         - "8000:80"
     depends_on:

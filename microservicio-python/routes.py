@@ -73,7 +73,7 @@ def login():
 
     if usuario and verificar_contrasena(contrasena, usuario.contrasena):
         logging.info("Login exitoso para el email: %s", email)
-        return jsonify({'message': 'Login exitoso'}), 200
+        return jsonify({'message': 'Login exitoso', 'usuarioId': usuario.id}), 200
     
     logging.warning("Login fallido para el email: %s", email)
     return jsonify({'message': 'Credenciales invalidas'}), 401

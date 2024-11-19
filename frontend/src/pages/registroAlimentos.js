@@ -12,6 +12,12 @@ const RegistroAlimentos = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     searchFood(searchQuery, quantity);
+
+    // Desplazar la página hacia los resultados de búsqueda
+    window.scrollTo({
+      top: document.getElementById('searchResults').offsetTop, // Desplazar hacia el contenedor de resultados
+      behavior: 'smooth',  // Desplazamiento suave
+    });
   };
 
   // Función para buscar alimentos en la API
@@ -64,14 +70,7 @@ const RegistroAlimentos = () => {
   };
 
   return (
-    <div>
-      {/* Barra de Navegación */}
-      <div className="navbar">
-        <a href="/seguimiento">Inicio</a>
-        <a href="/registroAlimentos">Registro de Alimentos</a>
-        <a href="/recomendaciones">Recomendaciones</a>
-      </div>
-
+    <div className="container">
       <h1>Registro de Alimentos</h1>
 
       <div className="form-container">
@@ -107,8 +106,8 @@ const RegistroAlimentos = () => {
         </form>
 
         {/* Resultados de Búsqueda */}
+        <h2>Resultados de Búsqueda</h2>
         <div className="search-results" id="searchResults">
-          <h2>Resultados de Búsqueda</h2>
           {searchResults.length > 0 ? (
             searchResults.map((product, index) => (
               <div className="result-item" key={index}>

@@ -10,7 +10,6 @@ const Registro = () => {
     email: '',
     password: '',
     age: '',
-    gender: '',
   });
 
   const handleChange = (e) => {
@@ -21,16 +20,47 @@ const Registro = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí iría la lógica para enviar el formulario al backend
-    // Por ejemplo, usando fetch o axios:
-    // fetch('/register', { method: 'POST', body: JSON.stringify(formData) });
-    // Simulación de registro exitoso
-    alert('Te has registrado exitosamente. ¡Bienvenido!');
 
-    // Redirigir al login
-    navigate('/login');
+    // Validar que todos los campos estén llenos (aunque ya tienes "required" en los inputs)
+    if (!formData.username || !formData.email || !formData.password || !formData.age) {
+      setError('Todos los campos son requeridos.');
+      return;
+    }
+
+    // Preparar los datos a enviar
+    const dataToSend = {
+      nombreUsario: formData.username,
+      email: formData.email,
+      contrasena: formData.password,
+      edad: formData.age,
+    };
+
+    try {
+      // Enviar los datos al backend usando fetch
+      const response = await fetch('/flask/usuarios', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend), // Enviar los datos como JSON
+      });
+
+      const data = await response.json(); // Convertir la respuesta a JSON
+
+      if (response.ok) {
+        // Si el registro fue exitoso
+        alert('Te has registrado exitosamente. ¡Bienvenido!');
+        navigate('/login'); // Redirigir al login
+      } else {
+        // Si hubo algún error (ej. email ya registrado)
+        setError(data.error || 'Error al registrar el usuario.');
+      }
+    } catch (error) {
+      // En caso de error en la solicitud (por ejemplo, problema con la conexión)
+      setError('Hubo un error al intentar registrar al usuario. Inténtalo de nuevo.');
+    }
   };
 
   return (
@@ -77,20 +107,6 @@ const Registro = () => {
           min="10"
           required
         />
-
-        {/* Género */}
-        <select
-          name="gender"
-          value={formData.gender}
-          onChange={handleChange}
-          required
-        >
-          <option value="" disabled selected>
-            Selecciona tu género
-          </option>
-          <option value="masculino">Masculino</option>
-          <option value="femenino">Femenino</option>
-        </select>
 
         {/* Botón de Enviar */}
         <input type="submit" value="Registrarse" />

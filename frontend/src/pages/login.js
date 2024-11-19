@@ -5,20 +5,38 @@ import './../styles/login.css';
 import logo from './../assets/logo.png';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  // Función para manejar el envío del formulario
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+  
+    // Enviar la solicitud de autenticación al backend Flask
+    try {
+      const response = await fetch('/flask/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email, contrasena: password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        localStorage.setItem('isAuthenticated', 'true');
+        const userId = data.usuarioId;
+        const expirationDate = new Date();
+        expirationDate.setTime(expirationDate.getTime() + (24 * 60 * 60 * 1000));
 
-    // Aquí va la lógica para verificar el login, por ahora, solo simularemos el login
-    if (username === 'usuario' && password === 'contraseña') {
-      localStorage.setItem('isAuthenticated', 'true');
-      navigate('/seguimiento');  // Redirige al inicio si es exitoso
-    } else {
-      alert('Usuario o contraseña incorrectos');
+        document.cookie = `user_id=${userId}; expires=${expirationDate.toUTCString()}; path=/`;        navigate('/seguimiento');
+      } else {
+        alert(data.message || 'Error en la autenticación');
+      }
+    } catch (error) {
+      console.error('Error al intentar autenticar:', error);
+      alert('Hubo un error al intentar autenticar. Inténtalo de nuevo más tarde.');
     }
   };
 
@@ -29,9 +47,9 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <input 
           type="text" 
-          placeholder="Usuario" 
-          value={username} 
-          onChange={(e) => setUsername(e.target.value)} 
+          placeholder="Email" 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
           required 
         />
         <input 
