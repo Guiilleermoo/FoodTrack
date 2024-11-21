@@ -1,32 +1,31 @@
-/* Estilos del header */
 header {
-  position: fixed;          /* Fija el header en la parte superior */
-  top: 0;                   /* Asegura que el header esté siempre en la parte superior */
-  left: 0;                  /* Alinea el header a la izquierda */
-  width: 100%;              /* El header ocupa todo el ancho de la pantalla */
-  background-color: #16a085; /* Fondo del header */
-  padding: 10px 0;          /* Espaciado vertical dentro del header */
-  z-index: 1000;            /* Asegura que el header se muestre encima del contenido */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Agrega una sombra sutil al header */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #16a085;
+  padding: 10px 0;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 nav {
   display: flex;
-  justify-content: center;  /* Centra los enlaces del menú */
-  gap: 20px;                /* Espacio entre los enlaces */
+  justify-content: center;
+  gap: 20px;
 }
 
 nav a, nav button {
-  color: white;             /* Color del texto en blanco */
-  text-decoration: none;    /* Sin subrayado en los enlaces */
-  font-size: 1.2em;         /* Tamaño de fuente */
-  transition: background-color 0.3s ease; /* Transición suave para el hover */
-  padding: 10px 20px;       /* Espaciado dentro de los enlaces */
-  border: none;             /* Sin bordes en los botones */
-  background: none;         /* Sin fondo en los enlaces */
+  color: white;
+  text-decoration: none;
+  font-size: 1.2em;
+  transition: background-color 0.3s ease;
+  padding: 10px 20px;
+  border: none;
+  background: none;
 }
 
 nav a:hover, nav button:hover {
-  background-color: #1abc9c; /* Color de fondo en hover */
-  cursor: pointer;           /* Muestra el cursor como puntero */
+  background-color: #1abc9c;
+  cursor: pointer;
 }

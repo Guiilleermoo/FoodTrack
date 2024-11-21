@@ -7,6 +7,7 @@ import Seguimiento from './pages/seguimiento';
 import RegistroAlimentos from './pages/registroAlimentos';
 import Recomendaciones from './pages/recomendaciones';
 import MainLayout from './layouts/mainLayout';
+import Prueba from './pages/prueba';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="seguimiento" element={<Seguimiento />} />
           <Route path="registroAlimentos" element={<RegistroAlimentos />} />
           <Route path="recomendaciones" element={<Recomendaciones />} />
+          <Route path="prueba" element={<Prueba />} />
         </Route>
         
          {/* Ruta por defecto para cuando no existe la ruta */}
