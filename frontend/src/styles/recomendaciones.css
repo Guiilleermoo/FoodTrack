@@ -26,26 +26,6 @@
   padding: 20px;
 }
 
-/* Restablecer márgenes y paddings por defecto */
-* {
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  height: 100%;
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
-}
-
-/* Estilo para las divisores entre secciones */
-.divider {
-  width: 80%;
-  height: 2px;
-  background-color: #16a085;
-  margin: 20px 0;
-}
-
 /* Estilo para cada sección de recomendación */
 .recommendation {
   width: 100%;
@@ -59,11 +39,34 @@ body {
   font-size: 1.8em;
   color: #16a085;
   margin-bottom: 20px;
+  cursor: pointer; /* Para hacer que se vea como un botón */
 }
 
+/* Divisor entre las recomendaciones */
+.divider {
+  width: 80%;
+  height: 2px;
+  background-color: #16a085;
+  margin: 20px 0;
+}
+
+/* Estilo para el contenedor de los productos con scroll */
+.product-list {
+  max-height: 300px; /* Definir una altura máxima */
+  overflow-y: auto; /* Hacer que se pueda desplazar hacia abajo */
+  padding: 10px;
+}
+
+/* Contenedor principal */
 .container {
+  margin-top: 50px;
   max-height: 100vh;
   padding: 20px;
   overflow-y: auto;
-  overflow-x: hidden; /* Evitar desbordamiento horizontal */
+  overflow-x: hidden;
+}
+
+/* Asegurarse de que los productos se muestren correctamente cuando se despliegan */
+.product-list div {
+  margin-bottom: 10px;
 }

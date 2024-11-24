@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
-import '../styles/seguimiento.css';
+import React, { useState, useEffect } from 'react';
+import '../styles/recomendaciones.css';
 
 const Recomendaciones = () => {
+  const [fruitVisible, setFruitVisible] = useState(false);
+  const [vegetableVisible, setVegetableVisible] = useState(false);
+  const [dairyVisible, setDairyVisible] = useState(false);
 
-  // Función para obtener productos de frutas de la API
   const fetchFruitProducts = async () => {
     const response = await fetch(
       `https://world.openfoodfacts.org/cgi/search.pl?search_terms=fruits naturels&sort_by=popularity&json=true`
@@ -12,10 +14,9 @@ const Recomendaciones = () => {
     displayFruitProducts(data.products);
   };
 
-  // Función para mostrar productos de frutas
   const displayFruitProducts = (products) => {
     const fruitProductsDiv = document.getElementById('fruitProducts');
-    fruitProductsDiv.innerHTML = ''; // Reiniciar contenido
+    fruitProductsDiv.innerHTML = '';
 
     if (products && products.length > 0) {
       products.slice(0, 3).forEach((product) => {
@@ -23,7 +24,7 @@ const Recomendaciones = () => {
         productItem.className = 'product-item';
 
         const productName = product.product_name || 'Nombre no disponible';
-        const imageUrl = product.image_url || ''; // Obtener imagen del producto
+        const imageUrl = product.image_url || '';
 
         productItem.innerHTML = `
           <img class="product-image" src="${imageUrl}" alt="${productName}">
@@ -36,7 +37,6 @@ const Recomendaciones = () => {
     }
   };
 
-  // Función para obtener productos de verduras de la API
   const fetchVegetableProducts = async () => {
     const response = await fetch(
       `https://world.openfoodfacts.org/cgi/search.pl?search_terms=verdura&sort_by=popularity&json=true`
@@ -45,10 +45,9 @@ const Recomendaciones = () => {
     displayVegetableProducts(data.products);
   };
 
-  // Función para mostrar productos de verduras
   const displayVegetableProducts = (products) => {
     const vegetableProductsDiv = document.getElementById('vegetableProducts');
-    vegetableProductsDiv.innerHTML = ''; // Reiniciar contenido
+    vegetableProductsDiv.innerHTML = '';
 
     if (products && products.length > 0) {
       products.slice(0, 3).forEach((product) => {
@@ -56,7 +55,7 @@ const Recomendaciones = () => {
         productItem.className = 'product-item';
 
         const productName = product.product_name || 'Nombre no disponible';
-        const imageUrl = product.image_url || ''; // Obtener imagen del producto
+        const imageUrl = product.image_url || '';
 
         productItem.innerHTML = `
           <img class="product-image" src="${imageUrl}" alt="${productName}">
@@ -69,7 +68,6 @@ const Recomendaciones = () => {
     }
   };
 
-  // Función para obtener productos lácteos de la API
   const fetchDairyProducts = async () => {
     const response = await fetch(
       `https://world.openfoodfacts.org/cgi/search.pl?search_terms=lácteo&sort_by=popularity&json=true`
@@ -78,7 +76,6 @@ const Recomendaciones = () => {
     displayDairyProducts(data.products);
   };
 
-  // Función para mostrar productos lácteos
   const displayDairyProducts = (products) => {
     const dairyProductsDiv = document.getElementById('dairyProducts');
     dairyProductsDiv.innerHTML = ''; // Reiniciar contenido
@@ -89,7 +86,7 @@ const Recomendaciones = () => {
         productItem.className = 'product-item';
 
         const productName = product.product_name || 'Nombre no disponible';
-        const imageUrl = product.image_url || ''; // Obtener imagen del producto
+        const imageUrl = product.image_url || '';
 
         productItem.innerHTML = `
           <img class="product-image" src="${imageUrl}" alt="${productName}">
@@ -102,41 +99,46 @@ const Recomendaciones = () => {
     }
   };
 
-  // Llamar a las funciones para obtener productos al cargar la página
   useEffect(() => {
     fetchFruitProducts();
     fetchVegetableProducts();
     fetchDairyProducts();
-  }, []); // Empty array ensures this effect runs once after the first render
+  }, []); 
 
   return (
-    <div className="container"> {/* Aquí usamos el contenedor para manejar el desbordamiento */}
+    <div className="container">
       <h1>Recomendaciones Personalizadas</h1>
 
       <div className="recommendation-container">
         <div className="recommendation">
-          <h2>¡Come más fruta!</h2>
-          <div className="product-list" id="fruitProducts">
-            {/* Productos de frutas aparecerán aquí */}
-          </div>
+          <h2 onClick={() => setFruitVisible(!fruitVisible)}>¡Come más fruta!</h2>
+          {fruitVisible && (
+            <div className="product-list" id="fruitProducts">
+              {/* Productos de frutas aparecerán aquí */}
+            </div>
+          )}
         </div>
 
         <div className="divider"></div>
 
         <div className="recommendation">
-          <h2>¡Incluye más verduras en tu dieta!</h2>
-          <div className="product-list" id="vegetableProducts">
-            {/* Productos de verduras aparecerán aquí */}
-          </div>
+          <h2 onClick={() => setVegetableVisible(!vegetableVisible)}>¡Incluye más verduras en tu dieta!</h2>
+          {vegetableVisible && (
+            <div className="product-list" id="vegetableProducts">
+              {/* Productos de verduras aparecerán aquí */}
+            </div>
+          )}
         </div>
 
         <div className="divider"></div>
 
         <div className="recommendation">
-          <h2>¡No olvides los productos lácteos!</h2>
-          <div className="product-list" id="dairyProducts">
-            {/* Productos lácteos aparecerán aquí */}
-          </div>
+          <h2 onClick={() => setDairyVisible(!dairyVisible)}>¡No olvides los productos lácteos!</h2>
+          {dairyVisible && (
+            <div className="product-list" id="dairyProducts">
+              {/* Productos lácteos aparecerán aquí */}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -12,7 +12,6 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
   
-    // Enviar la solicitud de autenticación al backend Flask
     try {
       const response = await fetch('/flask/login', {
         method: 'POST',
@@ -42,7 +41,7 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <img src={logo} alt="FoodTrack Logo" /> {/* Asegúrate de que la ruta sea correcta */}
+      <img src={logo} alt="FoodTrack Logo" />
       <h1>FoodTrack</h1>
       <form onSubmit={handleSubmit}>
         <input 

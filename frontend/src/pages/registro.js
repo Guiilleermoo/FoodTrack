@@ -23,13 +23,11 @@ const Registro = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validar que todos los campos estén llenos (aunque ya tienes "required" en los inputs)
     if (!formData.username || !formData.email || !formData.password || !formData.age) {
       setError('Todos los campos son requeridos.');
       return;
     }
 
-    // Preparar los datos a enviar
     const dataToSend = {
       nombreUsario: formData.username,
       email: formData.email,
@@ -38,27 +36,23 @@ const Registro = () => {
     };
 
     try {
-      // Enviar los datos al backend usando fetch
       const response = await fetch('/flask/usuarios', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(dataToSend), // Enviar los datos como JSON
+        body: JSON.stringify(dataToSend),
       });
 
-      const data = await response.json(); // Convertir la respuesta a JSON
+      const data = await response.json();
 
       if (response.ok) {
-        // Si el registro fue exitoso
         alert('Te has registrado exitosamente. ¡Bienvenido!');
-        navigate('/login'); // Redirigir al login
+        navigate('/login');
       } else {
-        // Si hubo algún error (ej. email ya registrado)
         setError(data.error || 'Error al registrar el usuario.');
       }
     } catch (error) {
-      // En caso de error en la solicitud (por ejemplo, problema con la conexión)
       setError('Hubo un error al intentar registrar al usuario. Inténtalo de nuevo.');
     }
   };
@@ -67,7 +61,6 @@ const Registro = () => {
     <div className="register-container">
       <h1>Registro en FoodTrack</h1>
       <form onSubmit={handleSubmit}>
-        {/* Nombre de Usuario */}
         <input
           type="text"
           placeholder="Nombre de Usuario"
@@ -77,7 +70,6 @@ const Registro = () => {
           required
         />
 
-        {/* Correo Electrónico */}
         <input
           type="email"
           placeholder="Correo Electrónico"
@@ -87,7 +79,6 @@ const Registro = () => {
           required
         />
 
-        {/* Contraseña */}
         <input
           type="password"
           placeholder="Contraseña"
@@ -97,7 +88,6 @@ const Registro = () => {
           required
         />
 
-        {/* Edad */}
         <input
           type="number"
           placeholder="Edad"
@@ -108,7 +98,6 @@ const Registro = () => {
           required
         />
 
-        {/* Botón de Enviar */}
         <input type="submit" value="Registrarse" />
       </form>
 

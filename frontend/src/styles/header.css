@@ -7,11 +7,16 @@ header {
   padding: 10px 0;
   z-index: 1000;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
 }
 
 nav {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 20px;
 }
 
@@ -23,6 +28,7 @@ nav a, nav button {
   padding: 10px 20px;
   border: none;
   background: none;
+  display: inline-block;
 }
 
 nav a:hover, nav button:hover {

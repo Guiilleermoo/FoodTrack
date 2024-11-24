@@ -2,80 +2,88 @@ import React, { useState } from 'react';
 import '../styles/registroAlimentos.css';
 
 const RegistroAlimentos = () => {
-  // Estado para almacenar los alimentos
-  const [foods, setFoods] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [quantity, setQuantity] = useState(1);
 
-  // Función para manejar el envío del formulario
-  const handleSubmit = (event) => {
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleQuantityChange = (event) => {
+    setQuantity(event.target.value);
+  };
+
+  const generateUniqueId = () => {
+    const timestamp = new Date().getTime();
+    const randomNum = Math.floor(Math.random() * 1000000);
+    return `${timestamp}-${randomNum}`;
+  };
+
+  const handleSearch = async (event) => {
     event.preventDefault();
-    searchFood(searchQuery, quantity);
 
-    // Desplazar la página hacia los resultados de búsqueda
-    window.scrollTo({
-      top: document.getElementById('searchResults').offsetTop, // Desplazar hacia el contenedor de resultados
-      behavior: 'smooth',  // Desplazamiento suave
-    });
-  };
+    if (searchQuery.trim() === '') return;
 
-  // Función para buscar alimentos en la API
-  const searchFood = async (query, quantity) => {
-    const response = await fetch(
-      `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${query}&sort_by=popularity&json=true`
-    );
-    const data = await response.json();
-    displaySearchResults(data.products, quantity);
-  };
+    setSearchResults([]);
 
-  // Función para mostrar los resultados de búsqueda
-  const displaySearchResults = (products, quantity) => {
-    if (products && products.length > 0) {
-      setSearchResults(
-        products.slice(0, 10).map((product) => {
-          const productName = product.product_name || 'Nombre no disponible';
-          const calories = product.nutriments ? product.nutriments['energy-kcal_100g'] : 'No disponible';
-          const ecoscore = product.ecoscore_grade || 'No disponible'; // Obtener ecoscore
-          const imageUrl = product.image_url || ''; // Obtener imagen del producto
-
-          // Calcular calorías para la cantidad dada
-          const caloriesForQuantity =
-            calories !== 'No disponible' ? ((calories * quantity) / 100).toFixed(2) : 'No disponible';
-
-          return {
-            name: productName,
-            quantity,
-            caloriesForQuantity,
-            ecoscore,
-            imageUrl,
-          };
-        })
+    try {
+      const response = await fetch(
+        `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${searchQuery}&sort_by=popularity&json=true`
       );
-    } else {
+      const data = await response.json();
+
+      const products = data.products.slice(0, 10).map((product) => {
+        const caloriesPer100g = product.nutriments ? product.nutriments['energy-kcal_100g'] : 0;
+        const calculatedCalories = (caloriesPer100g * quantity) / 100;
+
+        return {
+          name: product.product_name || 'Nombre no disponible',
+          caloriesPer100g: caloriesPer100g,
+          calculatedCalories: calculatedCalories,
+          ecoscore: product.ecoscore_grade || 'No disponible',
+          image: product.image_url || '',
+          quantity: quantity,
+        };
+      });
+
+      setSearchResults(products);
+    } catch (error) {
+      console.error('Error fetching data:', error);
       setSearchResults([]);
     }
   };
 
-  // Función para agregar un alimento a la lista de alimentos
-  const addFood = (name, quantity, calories, ecoscore, image) => {
-    const newFood = { name, quantity, calories, ecoscore, image };
-    setFoods([...foods, newFood]);
+  const handleAddToSelection = (product) => {
+    const productWithId = {
+      ...product,
+      id: generateUniqueId(),
+    };
+  
+    // Actualiza el estado de selectedItems añadiendo el nuevo producto
+    setSelectedItems((prevItems) => {
+      // Verifica si el producto ya está en la lista
+      if (prevItems.some(item => item.id === productWithId.id)) {
+        console.log('Producto ya agregado');
+        return prevItems; // No agrega el producto si ya existe
+      } else {
+        console.log('Producto agregado', productWithId);
+        return [...prevItems, productWithId]; // Agrega el producto con el id generado
+      }
+    });
   };
 
-  // Función para eliminar un alimento de la lista
-  const deleteFood = (index) => {
-    const newFoods = foods.filter((food, i) => i !== index);
-    setFoods(newFoods);
+  const handleRemoveFromSelection = (id) => {
+    setSelectedItems((prevItems) => prevItems.filter(item => item.id !== id));
   };
 
   return (
-    <div className="container">
+    <div className="container" style={{ paddingTop: '800px' }}>
       <h1>Registro de Alimentos</h1>
 
       <div className="form-container">
-        {/* Formulario de Búsqueda */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSearch}>
           <div className="form-group">
             <label htmlFor="searchQuery">Buscar Alimento</label>
             <input
@@ -83,7 +91,7 @@ const RegistroAlimentos = () => {
               id="searchQuery"
               name="searchQuery"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               required
             />
           </div>
@@ -96,7 +104,7 @@ const RegistroAlimentos = () => {
               min="1"
               max="1000"
               value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              onChange={handleQuantityChange}
               required
             />
           </div>
@@ -104,48 +112,48 @@ const RegistroAlimentos = () => {
             <input type="submit" value="Buscar" />
           </div>
         </form>
+      </div>
 
-        {/* Resultados de Búsqueda */}
-        <h2>Resultados de Búsqueda</h2>
-        <div className="search-results" id="searchResults">
-          {searchResults.length > 0 ? (
-            searchResults.map((product, index) => (
-              <div className="result-item" key={index}>
-                <div>
-                  <img className="result-image" src={product.imageUrl} alt={product.name} />
-                  <span>
-                    {product.name} - {product.quantity}g - {product.caloriesForQuantity} kcal - EcoScore: {product.ecoscore}
-                  </span>
-                </div>
-                <button onClick={() => addFood(product.name, product.quantity, product.caloriesForQuantity, product.ecoscore, product.imageUrl)}>
-                  Agregar
-                </button>
-              </div>
-            ))
-          ) : (
-            <p>No se encontraron resultados.</p>
-          )}
-        </div>
-
-        {/* Lista de Alimentos Registrados */}
-        <div className="food-list" id="foodList">
-          <h2>Alimentos Registrados</h2>
-          {foods.length > 0 ? (
-            foods.map((food, index) => (
-              <div className="food-item" key={index}>
-                <img className="result-image" src={food.image} alt={food.name} />
+      <h2 className="section-title">Resultados de la Búsqueda</h2>
+      <div className="results-container">
+        {searchResults.length === 0 ? (
+          <p>No se han encontrado resultados</p>
+        ) : (
+          searchResults.map((result) => (
+            <div key={result.id} className="result-item">
+              <img src={result.image || 'default-image.jpg'} alt={result.name} className="result-image" />
+              <div>
                 <span>
-                  {food.name} - {food.quantity}g - {food.calories} kcal - EcoScore: {food.ecoscore}
+                  {result.name} - {result.quantity} g - {result.calculatedCalories} kcal - EcoScore: {result.ecoscore}
                 </span>
-                <div>
-                  <button onClick={() => deleteFood(index)}>Eliminar</button>
-                </div>
               </div>
-            ))
-          ) : (
-            <p>No hay alimentos registrados.</p>
-          )}
-        </div>
+              <div>
+                <button onClick={() => handleAddToSelection(result)}>Agregar</button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      <h2 className="section-title">Productos Seleccionados</h2>
+      <div className="selected-items-container">
+        {selectedItems.length === 0 ? (
+          <p>No has seleccionado productos</p>
+        ) : (
+          selectedItems.map((item) => (
+            <div key={item.id} className="selected-item">
+              <img src={item.image || 'default-image.jpg'} alt={item.name} className="result-image" />
+              <div>
+                <span>
+                  {item.name} - {item.quantity} g - {item.calculatedCalories} kcal - EcoScore: {item.ecoscore}
+                </span>
+              </div>
+              <div>
+                <button onClick={() => handleRemoveFromSelection(item.id)}>Eliminar</button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
