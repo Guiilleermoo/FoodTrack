@@ -60,7 +60,6 @@
 /* Contenedor principal */
 .container {
   margin-top: 50px;
-  max-height: 100vh;
   padding: 20px;
   overflow-y: auto;
   overflow-x: hidden;

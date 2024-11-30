@@ -22,14 +22,15 @@ const Login = () => {
       });
   
       const data = await response.json();
-  
       if (response.ok) {
         localStorage.setItem('isAuthenticated', 'true');
+
         const userId = data.usuarioId;
         const expirationDate = new Date();
         expirationDate.setTime(expirationDate.getTime() + (24 * 60 * 60 * 1000));
-
-        document.cookie = `user_id=${userId}; expires=${expirationDate.toUTCString()}; path=/`;        navigate('/seguimiento');
+        
+        document.cookie = `user_id=${userId}; expires=${expirationDate.toUTCString()}; path=/`;
+        navigate('/seguimiento');
       } else {
         alert(data.message || 'Error en la autenticación');
       }

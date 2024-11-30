@@ -7,19 +7,13 @@ logging.basicConfig(level=logging.DEBUG)
 
 bp = Blueprint('routes', __name__)
 
-# Almacenar una contraseña
 def hash_password(contrasena):
-    # Generar un salt
     salt = bcrypt.gensalt()
-    # Hash de la contraseña
     hashed = bcrypt.hashpw(contrasena.encode('utf-8'), salt)
-    # Convertir a base64 para almacenar como string
     hashed_str = base64.b64encode(hashed).decode('utf-8')
     return hashed_str
 
-# Verificar una contraseña
 def verificar_contrasena(contrasena, hashed_str):
-    # Decodificar el hash de base64 a bytes
     hashed = base64.b64decode(hashed_str.encode('utf-8'))
     return bcrypt.checkpw(contrasena.encode('utf-8'), hashed)
 
@@ -31,7 +25,6 @@ def crearUsuario():
 
     logging.debug("Datos recibidos para crear usuario: %s", data)
 
-     # Verifica que se reciban los datos correctamente
     if not data or not all(key in data for key in ['nombreUsario', 'email', 'contrasena', 'edad']):
         logging.error("Faltan datos requeridos para crear usuario")
         return jsonify({"error": "Faltan datos requeridos"}), 400
@@ -50,9 +43,9 @@ def crearUsuario():
         db.session.commit()
         logging.info("Usuario creado exitosamente: %s", usuarioNuevo.to_dict())
     except Exception as e:
-        db.session.rollback()  # Deshacer cambios en caso de error
+        db.session.rollback()
         logging.error("Error al guardar el usuario: %s", str(e))
-        return jsonify({"error": str(e)}), 400  # Devuelve el error al cliente
+        return jsonify({"error": str(e)}), 400
     
     return jsonify(usuarioNuevo.to_dict()), 201
 
@@ -98,7 +91,7 @@ def eliminar_usuario(idUsuario):
         logging.info("Usuario con ID %d eliminado exitosamente", idUsuario)
         return jsonify({'message': 'Usuario eliminado exitosamente.'}), 200
     except Exception as e:
-        db.session.rollback()  # Deshacer cambios en caso de error
+        db.session.rollback()
         logging.error("Error al eliminar el usuario con ID %d: %s", idUsuario, str(e))
         return jsonify({'error': str(e)}), 400
 
@@ -110,7 +103,6 @@ def crearAlimento():
 
     logging.debug("Datos recibidos para crear alimento: %s", data)
 
-     # Verifica que se reciban los datos correctamente
     if not data or not all(key in data for key in ['nombreAlimento']):
         logging.error("Faltan datos requeridos para crear alimento")
         return jsonify({"error": "Faltan datos requeridos"}), 400
@@ -125,9 +117,9 @@ def crearAlimento():
         db.session.commit()
         logging.info("Alimento creado exitosamente: %s", alimentoNuevo.to_dict())
     except Exception as e:
-        db.session.rollback()  # Deshacer cambios en caso de error
+        db.session.rollback()
         logging.error("Error al guardar el alimento: %s", str(e))
-        return jsonify({"error": str(e)}), 400  # Devuelve el error al cliente
+        return jsonify({"error": str(e)}), 400
     
     return jsonify(alimentoNuevo.to_dict()), 201
 
@@ -138,40 +130,53 @@ def actualizarAlimento(idAlimento):
 
     logging.debug("Datos recibidos para actualizar alimento ID %d: %s", idAlimento, data)
 
-    # Verifica que se reciban los datos correctamente
     if not data:
         logging.error("No se recibieron datos para actualizar el alimento")
         return jsonify({"error": "No se recibieron datos"}), 400
 
-    # Busca el alimento en la base de datos
     alimento = Alimento.query.get(idAlimento)
     if not alimento:
         logging.error("Alimento con ID %d no encontrado", idAlimento)
         return jsonify({"error": "Alimento no encontrado"}), 404
 
-    # Actualiza los campos si están presentes en la solicitud
     if 'nombreAlimento' in data:
         alimento.nombreAlimento = data['nombreAlimento']
     if 'nutriScore' in data:
         alimento.nutriScore = data['nutriScore']
 
-    # Guarda los cambios en la base de datos
     try:
         db.session.commit()
         logging.info("Alimento con ID %d actualizado exitosamente", idAlimento)
     except Exception as e:
-        db.session.rollback()  # Deshacer cambios en caso de error
+        db.session.rollback()
         logging.error("Error al actualizar el alimento: %s", str(e))
-        return jsonify({"error": str(e)}), 400  # Devuelve el error al cliente
+        return jsonify({"error": str(e)}), 400
 
     return jsonify(alimento.to_dict()), 200
+
+# Buscar Alimento por nombreAlimento
+@bp.route('/alimentos/buscar/<string:nombreAlimento>', methods=['GET'])
+def buscarAlimentoPorNombre(nombreAlimento):
+    if not nombreAlimento:
+        logging.error("No se recibió el nombre del alimento a buscar")
+        return jsonify({"error": "Nombre del alimento es requerido"}), 400
+
+    logging.debug("Buscando alimento por nombre: %s", nombreAlimento)
+
+    alimento = Alimento.query.filter_by(nombreAlimento=nombreAlimento).first()
+
+    if not alimento:
+        logging.error("No se encontraron un alimento con el nombre: %s", nombreAlimento)
+        return jsonify({"error": "No se encontró el alimento"}), 404
+
+    logging.info("Alimento encontrado: %s", alimento.to_dict())
+    return jsonify({"alimento": alimento.to_dict()}), 200
 
 # Eliminar Alimento
 @bp.route('/alimentos/<int:idAlimento>', methods=['DELETE'])
 def eliminarAlimento(idAlimento):
     logging.debug("Solicitando eliminación de alimento ID %d", idAlimento)
 
-    # Busca el alimento en la base de datos
     alimento = Alimento.query.get(idAlimento)
     if not alimento:
         logging.error("Alimento con ID %d no encontrado", idAlimento)
@@ -179,16 +184,15 @@ def eliminarAlimento(idAlimento):
 
     logging.info("Alimento encontrado: %s", alimento.to_dict())
 
-    # Elimina el alimento de la base de datos
     db.session.delete(alimento)
 
     try:
         db.session.commit()
         logging.info("Alimento con ID %d eliminado exitosamente", idAlimento)
     except Exception as e:
-        db.session.rollback()  # Deshacer cambios en caso de error
+        db.session.rollback()
         logging.error("Error al eliminar el alimento: %s", str(e))
-        return jsonify({"error": str(e)}), 400  # Devuelve el error al cliente
+        return jsonify({"error": str(e)}), 400
 
     return jsonify({"message": "Alimento eliminado exitosamente"}), 200
 
@@ -200,7 +204,6 @@ def crearRegistroConsumo():
 
     logging.debug("Datos recibidos para crear registro de consumo: %s", data)
 
-    # Verifica que se reciban los datos correctamente
     if not data or not all(key in data for key in ['alimentoID', 'usuarioID', 'cantidad', 'calorias']):
         logging.error("Faltan datos requeridos para crear el registro de consumo")
         return jsonify({"error": "Faltan datos requeridos"}), 400
@@ -210,12 +213,10 @@ def crearRegistroConsumo():
     cantidad = data.get('cantidad')
     calorias = data.get('calorias')
 
-    # Validar que cantidad sea numérica
     if not isinstance(cantidad, (int, float)):
         logging.error("Cantidad debe ser numérica")
         return jsonify({"error": "Cantidad debe ser numérica"}), 400
 
-    # Validar que calorías sea numérica
     if not isinstance(calorias, (int, float)):
         logging.error("Calorías debe ser numérica")
         return jsonify({"error": "Calorías debe ser numérica"}), 400
@@ -227,33 +228,57 @@ def crearRegistroConsumo():
         db.session.commit()
         logging.info("Registro de consumo creado exitosamente: %s", nuevoConsumo.to_dict())
     except Exception as e:
-        db.session.rollback()  # Deshacer cambios en caso de error
+        db.session.rollback()
         logging.error("Error al guardar el registro de consumo: %s", str(e))
-        return jsonify({"error": str(e)}), 400  # Devuelve el error al cliente
+        return jsonify({"error": str(e)}), 400
 
     return jsonify(nuevoConsumo.to_dict()), 201
+
+# Obtener todos los alimentos consumidos por un usuario
+@bp.route('/consumos/usuario/<int:usuarioID>', methods=['GET'])
+def obtenerConsumosPorUsuario(usuarioID):
+    logging.debug("Solicitando consumos para el usuario con ID %d", usuarioID)
+
+    consumos = Consumo.query.filter_by(usuarioID=usuarioID).all()
+
+    if not consumos:
+        logging.error("No se encontraron consumos para el usuario con ID %d", usuarioID)
+        return jsonify({"error": "No se encontraron consumos para este usuario"}), 404
+
+    consumos_lista = []
+    for consumo in consumos:
+        alimento = Alimento.query.get(consumo.alimentoID)
+        if alimento:
+            consumos_lista.append({
+                "alimento": alimento.to_dict(),
+                "cantidad": consumo.cantidad,
+                "calorias": consumo.calorias,
+                "fechaConsumo": consumo.fechaConsumo
+            })
+
+    logging.info("Consumos obtenidos para el usuario con ID %d: %s", usuarioID, consumos_lista)
+
+    return jsonify({"consumos": consumos_lista}), 200
 
 # Eliminar Registro de Consumo
 @bp.route('/consumos/<int:idConsumo>', methods=['DELETE'])
 def eliminarRegistroConsumo(idConsumo):
     logging.debug("Solicitando eliminación de registro de consumo ID %d", idConsumo)
 
-    # Busca el registro de consumo en la base de datos
     consumo = Consumo.query.get(idConsumo)
     if not consumo:
         logging.error("Registro de consumo con ID %d no encontrado", idConsumo)
         return jsonify({"error": "Registro de consumo no encontrado"}), 404
 
     logging.info("Consumo encontrado: %s", consumo.to_dict())
-    # Elimina el registro de consumo de la base de datos
     db.session.delete(consumo)
 
     try:
         db.session.commit()
         logging.info("Registro de consumo con ID %d eliminado exitosamente", idConsumo)
     except Exception as e:
-        db.session.rollback()  # Deshacer cambios en caso de error
+        db.session.rollback()
         logging.error("Error al eliminar el registro de consumo: %s", str(e))
-        return jsonify({"error": str(e)}), 400  # Devuelve el error al cliente
+        return jsonify({"error": str(e)}), 400
 
     return jsonify({"message": "Registro de consumo eliminado exitosamente"}), 200

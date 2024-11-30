@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 
 const Seguimiento = () => {
@@ -6,9 +6,44 @@ const Seguimiento = () => {
   const caloriesChartRef = useRef(null);
   const mostConsumedChartRef = useRef(null);
   const recommendedChartRef = useRef(null);
+  const [evoluciones, setEvoluciones] = useState([]);
 
   // Configuración de los gráficos
   useEffect(() => {
+
+    const getCookie = (name) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    };
+
+    const usuarioId = getCookie('user_id');
+    console.log('ID de usuario:', usuarioId);
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/node/evoluciones/${usuarioId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setEvoluciones(data);
+          console.log('Evoluciones obtenidas:', data);
+        } else {
+          console.error('Error al obtener las evoluciones:', data);
+        }
+      } catch (error) {
+        console.error('Error al realizar la solicitud:', error);
+      }
+    };
+    console.log('Evoluciones:', evoluciones);
+    fetchData();
+
     // Gráfico de Consumo de Calorías por Día
     const caloriesChartCtx = caloriesChartRef.current.getContext('2d');
     new Chart(caloriesChartCtx, {

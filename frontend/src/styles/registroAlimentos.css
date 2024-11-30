@@ -14,6 +14,7 @@ body {
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
+  overflow: hidden;
 }
 
 h1 {
@@ -78,7 +79,6 @@ h1 {
   margin: 5px 0;
   background-color: #f7f7f7;
   border-radius: 5px;
-  width: 100%;
 }
 
 .result-item p,
@@ -266,11 +266,7 @@ h1 {
     font-size: 1em;
     color: #34495e;
   }
-  
-  body {
-    overflow-x: hidden;
-  }
-  
+
 button {
   margin-left: auto;
   background-color: #16a085;

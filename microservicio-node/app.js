@@ -101,7 +101,7 @@ app.delete('/recomendaciones/:id', async (req, res) => {
 
 // Crear una Evolución
 app.post('/evoluciones', async (req, res) => {
-  const { usuarioId, progreso, caloriasConsumidas, alimentoMasConsumido, estadisticas } = req.body;
+  const { usuarioId, caloriasConsumidas, alimentoMasConsumido, estadisticas } = req.body;
 
   if (!req.body) {
     logger.warn('El cuerpo de la solicitud está vacío.');
@@ -111,7 +111,6 @@ app.post('/evoluciones', async (req, res) => {
   try {
     const evolucion = new Evolucion({
       usuarioId,
-      progreso,
       caloriasConsumidas,
       alimentoMasConsumido,
       estadisticas
