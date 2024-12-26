@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Recomendacion = require('./models/Recomendacion');
 const Evolucion = require('./models/Evolucion');
 const logger = require('./logger');
+const verificarToken = require('./middleware/auth');
 
 const app = express();
 app.use(express.json());
@@ -23,7 +24,7 @@ mongoose.connect(mongoURI)
 
 /**********************RECOMENDACION********************/
 // Crear una Recomendacion
-app.post('/recomendaciones', async (req, res) => {
+app.post('/recomendaciones', verificarToken, async (req, res) => {
   const { usuarioId, alimentosRecomendados, motivo } = req.body;
 
   if (!req.body) {
@@ -47,7 +48,7 @@ app.post('/recomendaciones', async (req, res) => {
 });
 
 // Leer todas las recomendaciones de un usuario (usuarioId)
-app.get('/recomendaciones/:usuarioId', async (req, res) => {
+app.get('/recomendaciones/usuario/:usuarioId', verificarToken, async (req, res) => {
   const usuarioId = req.params.usuarioId;
 
   try {
@@ -65,7 +66,7 @@ app.get('/recomendaciones/:usuarioId', async (req, res) => {
 });
 
 // Actualizar una Recomendacion
-app.patch('/recomendaciones/:id', async (req, res) => {
+app.patch('/recomendaciones/:id', verificarToken, async (req, res) => {
   try {
     const recomendacion = await Recomendacion.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!recomendacion) {
@@ -81,7 +82,7 @@ app.patch('/recomendaciones/:id', async (req, res) => {
 });
 
 // Eliminar una Recomendacion 
-app.delete('/recomendaciones/:id', async (req, res) => {
+app.delete('/recomendaciones/:id', verificarToken, async (req, res) => {
   try {
     const recomendacion = await Recomendacion.findByIdAndDelete(req.params.id);
     if (!recomendacion) {
@@ -100,7 +101,7 @@ app.delete('/recomendaciones/:id', async (req, res) => {
 /**********************EVOLUCION********************/
 
 // Crear una Evolución
-app.post('/evoluciones', async (req, res) => {
+app.post('/evoluciones', verificarToken, async (req, res) => {
   const { usuarioId, caloriasConsumidas, alimentoMasConsumido, estadisticas } = req.body;
 
   if (!req.body) {
@@ -125,7 +126,7 @@ app.post('/evoluciones', async (req, res) => {
 });
 
 // Leer todas las evoluciones de un usuario (usuarioId)
-app.get('/evoluciones/:usuarioId', async (req, res) => {
+app.get('/evoluciones/:usuarioId', verificarToken, async (req, res) => {
   const usuarioId = req.params.usuarioId;
 
   try {
@@ -143,7 +144,7 @@ app.get('/evoluciones/:usuarioId', async (req, res) => {
 });
 
 // Leer una evolución específica por ID
-app.get('/evoluciones/:usuarioId/:id', async (req, res) => {
+app.get('/evoluciones/:usuarioId/:id', verificarToken, async (req, res) => {
   const { usuarioId, id } = req.params;
 
   try {
@@ -161,7 +162,7 @@ app.get('/evoluciones/:usuarioId/:id', async (req, res) => {
 });
 
 // Actualizar una Evolución
-app.patch('/evoluciones/:id', async (req, res) => {
+app.patch('/evoluciones/:id', verificarToken, async (req, res) => {
   try {
     const evolucion = await Evolucion.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!evolucion) {
@@ -177,7 +178,7 @@ app.patch('/evoluciones/:id', async (req, res) => {
 });
 
 // Eliminar una Evolución
-app.delete('/evoluciones/:id', async (req, res) => {
+app.delete('/evoluciones/:id', verificarToken, async (req, res) => {
   try {
     const evolucion = await Evolucion.findByIdAndDelete(req.params.id);
     if (!evolucion) {

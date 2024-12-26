@@ -9,7 +9,7 @@ def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://python:python@db:3306/microservicioPythonDB'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+    app.config['SECRET_KEY'] = 'sdfsdfbvcxbc324234sdgdszfgGFD'
     db.init_app(app)
 
     with app.app_context():

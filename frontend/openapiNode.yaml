@@ -1,0 +1,347 @@
+openapi: 3.0.0
+info:
+  title: Microservicio Node.js
+  version: 1.0.0
+  description: Especificación OpenAPI para microservicio de Node.js
+servers:
+  - url: http://localhost:3000  # Node.js
+    description: Servicio de procesamiento de datos
+    
+tags:
+  - name: Node.js
+    description: Microservicio basado en Node.js para procesamiento de datos.
+
+paths:    
+  /recomendaciones:
+    post:
+      summary: Crear una nueva recomendación
+      tags:
+        - Node.js
+      description: Crear una recomendación para un usuario con alimentos recomendados y un motivo.
+      requestBody:
+        description: Datos necesarios para crear una recomendación.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usuarioId:
+                  type: string
+                  description: ID del usuario al que pertenece la recomendación.
+                alimentosRecomendados:
+                  type: array
+                  items:
+                    type: string
+                  description: Lista de alimentos recomendados.
+                motivo:
+                  type: string
+                  description: Motivo de la recomendación.
+              required:
+                - usuarioId
+                - alimentosRecomendados
+                - motivo
+      responses:
+        '201':
+          description: Recomendación creada con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recomendacion'
+        '400':
+          description: Error en los datos de entrada.
+        '500':
+          description: Error del servidor.
+
+  /recomendaciones/usuario/{usuarioId}:
+    get:
+      summary: Obtener recomendaciones por usuario
+      description: Obtener todas las recomendaciones asociadas a un usuario específico.
+      tags:
+        - Node.js
+      parameters:
+        - name: usuarioId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario.
+      responses:
+        '200':
+          description: Recomendaciones del usuario.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recomendacion'
+        '404':
+          description: No se encontraron recomendaciones para el usuario.
+        '500':
+          description: Error del servidor.
+
+  /recomendaciones/{id}:
+    patch:
+      summary: Actualizar una recomendación
+      description: Actualizar una recomendación existente por su ID
+      tags:
+        - Node.js
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la recomendación a actualizar.
+      requestBody:
+        description: Datos para actualizar la recomendación.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                alimentosRecomendados:
+                  type: array
+                  items:
+                    type: string
+                motivo:
+                  type: string
+      responses:
+        '200':
+          description: Recomendación actualizada con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recomendacion'
+        '404':
+          description: Recomendación no encontrada.
+        '400':
+          description: Error en los datos de entrada.
+
+    delete:
+      summary: Eliminar una recomendación
+      description: Eliminar una recomendación por su ID.
+      tags:
+        - Node.js
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la recomendación a eliminar.
+      responses:
+        '200':
+          description: Recomendación eliminada con éxito.
+        '404':
+          description: Recomendación no encontrada.
+        '500':
+          description: Error del servidor.
+
+  /evoluciones:
+    post:
+      summary: Crear una nueva evolución
+      description: Crear una evolución para un usuario.
+      tags:
+        - Node.js
+      requestBody:
+        description: Datos necesarios para crear una evolución.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usuarioId:
+                  type: string
+                  description: ID del usuario.
+                caloriasConsumidas:
+                  type: number
+                  description: Calorías consumidas en un periodo.
+                alimentoMasConsumido:
+                  type: string
+                  description: Alimento más consumido por el usuario.
+                estadisticas:
+                  type: object
+                  description: Datos estadísticos adicionales.
+      responses:
+        '201':
+          description: Evolución creada con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evolucion'
+        '400':
+          description: Error en los datos de entrada.
+        '500':
+          description: Error del servidor.
+
+  /evoluciones/{usuarioId}:
+    get:
+      summary: Obtener evoluciones por usuario
+      description: Obtener todas las evoluciones asociadas a un usuario específico.
+      tags:
+        - Node.js
+      parameters:
+        - name: usuarioId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario.
+      responses:
+        '200':
+          description: Evoluciones del usuario.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evolucion'
+        '404':
+          description: No se encontraron evoluciones.
+        '500':
+          description: Error del servidor.
+
+  /evoluciones/{usuarioId}/{id}:
+    get:
+      summary: Obtener una evolución específica
+      description: Obtener una evolución específica de un usuario por su ID.
+      tags:
+        - Node.js
+      parameters:
+        - name: usuarioId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario.
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la evolución.
+      responses:
+        '200':
+          description: Evolución encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evolucion'
+        '404':
+          description: Evolución no encontrada.
+        '500':
+          description: Error del servidor.
+          
+  /evoluciones/{id}:
+    patch:
+      summary: Actualizar una evolución por ID
+      description: Actualiza los detalles de una evolución específica utilizando su ID.
+      tags:
+        - Node.js
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la evolución a actualizar.
+          schema:
+            type: string
+      requestBody:
+        description: Datos para actualizar la evolución.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Evolucion'
+      responses:
+        '200':
+          description: Evolución actualizada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evolucion'
+        '404':
+          description: Evolución no encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '400':
+          description: Error al actualizar la evolución.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+    delete:
+      summary: Eliminar una evolución por ID
+      description: Elimina una evolución específica utilizando su ID.
+      tags:
+        - Node.js
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la evolución a eliminar.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Evolución eliminada exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evolucion'
+        '404':
+          description: Evolución no encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Error interno al eliminar la evolución.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+
+components:
+  schemas:
+    Recomendacion:
+      type: object
+      properties:
+        usuarioId:
+          type: string
+        alimentosRecomendados:
+          type: array
+          items:
+            type: string
+        motivo:
+          type: string
+
+    Evolucion:
+      type: object
+      properties:
+        usuarioId:
+          type: string
+        caloriasConsumidas:
+          type: number
+        alimentoMasConsumido:
+          type: string
+        estadisticas:
+          type: object

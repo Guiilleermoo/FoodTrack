@@ -4,6 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "font-awesome": "4.7.0",
+    "jwt-decode": "^3.1.2",
+    "swagger-ui-react": "^4.1.0",
     "react-icons": "^4.0.0",
     "react-chartjs-2": "^4.0.0", 
     "chart.js": "^3.8.0",
@@ -11,7 +14,9 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "^5.0.1",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^4.2.4",
+    "react-google-login": "^5.1.0",
+    "react-github-login": "^1.0.0"
   },
   "devDependencies": {},
   "scripts": {

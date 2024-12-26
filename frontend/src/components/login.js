@@ -1,8 +1,8 @@
-// /src/pages/Login.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './../styles/login.css';
 import logo from './../assets/logo.png';
+import 'font-awesome/css/font-awesome.min.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -23,7 +23,7 @@ const Login = () => {
   
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('authToken', data.token);
 
         const userId = data.usuarioId;
         const expirationDate = new Date();
@@ -61,6 +61,24 @@ const Login = () => {
         />
         <input type="submit" value="Iniciar Sesión" />
       </form>
+
+      <div className="social-login-buttons">
+        {/* Google Button */}
+        <button 
+          onClick={() => window.location.href = 'http://localhost:8000/flask/auth/google/login'}
+          className="social-btn google-btn"
+        >
+           <i className="fa fa-google social-icon"></i>
+        </button>
+
+        {/* GitHub Button */}
+        <button 
+          onClick={() => window.location.href = 'http://localhost:8000/flask/auth/github/login'}
+          className="social-btn github-btn"
+        >
+          <i className="fa fa-github social-icon"></i>
+        </button>
+      </div>
 
       <p>¿No tienes una cuenta? <a href="/registro">Regístrate</a></p>
     </div>

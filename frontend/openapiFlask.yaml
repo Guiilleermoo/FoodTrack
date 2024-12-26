@@ -1,0 +1,388 @@
+openapi: 3.0.0
+info:
+  title: Microservicio Flask
+  version: 1.0.0
+  description: Especificación OpenAPI para microservicio de Flask
+servers:
+  - url: http://localhost:5000  # Flask
+    description: Servicio de autenticación y manejo de alimentos
+    
+tags:
+  - name: Flask
+    description: Microservicio basado en Flask para autenticación y manejo de alimentos.
+
+paths:
+  /login:
+    post:
+      summary: Autenticación de usuario
+      description: Autentica al usuario con su correo electrónico y contraseña.
+      tags:
+        - Flask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Correo electrónico del usuario.
+                  example: usuario@dominio.com
+                contrasena:
+                  type: string
+                  description: Contraseña del usuario.
+                  example: "1234Segura"
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login exitoso
+                  usuarioId:
+                    type: integer
+                    example: 1
+        '400':
+          description: Faltan credenciales en la solicitud
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Email y contrasena son requeridos.
+        '401':
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Credenciales invalidas
+                    
+  /usuarios:
+    post:
+      summary: Crear un usuario
+      tags:
+        - Flask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombreUsario:
+                  type: string
+                email:
+                  type: string
+                contrasena:
+                  type: string
+                edad:
+                  type: integer
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nombreUsario:
+                    type: string
+                  email:
+                    type: string
+                  edad:
+                    type: integer
+        '400':
+          description: Error al crear el usuario
+
+  /usuarios/{idUsuario}:
+    delete:
+      summary: Eliminar un usuario
+      tags:
+        - Flask
+      parameters:
+        - in: path
+          name: idUsuario
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Usuario eliminado exitosamente
+        '404':
+          description: Usuario no encontrado
+        '400':
+          description: Error al eliminar el usuario
+
+  /alimentos:
+    post:
+      summary: Crear un alimento
+      tags:
+        - Flask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombreAlimento:
+                  type: string
+                nutriScore:
+                  type: string
+                  default: "E"
+      responses:
+        '201':
+          description: Alimento creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nombreAlimento:
+                    type: string
+                  nutriScore:
+                    type: string
+        '400':
+          description: Error al crear el alimento
+          
+  /alimentos/buscar/{nombreAlimento}:
+    get:
+      summary: Buscar un alimento por nombre
+      tags:
+        - Flask
+      parameters:
+        - in: path
+          name: nombreAlimento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Alimento encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  alimento:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      nombreAlimento:
+                        type: string
+                      nutriScore:
+                        type: string
+        '404':
+          description: Alimento no encontrado
+          
+  /alimentos/{idAlimento}:
+    put:
+      summary: Actualizar un alimento
+      tags:
+        - Flask
+      parameters:
+        - in: path
+          name: idAlimento
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombreAlimento:
+                  type: string
+                nutriScore:
+                  type: string
+      responses:
+        '200':
+          description: Alimento actualizado exitosamente
+        '404':
+          description: Alimento no encontrado
+        '400':
+          description: Error al actualizar el alimento
+    delete:
+      summary: Eliminar un alimento
+      tags:
+        - Flask
+      parameters:
+        - in: path
+          name: idAlimento
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Alimento eliminado exitosamente
+        '404':
+          description: Alimento no encontrado
+        '400':
+          description: Error al eliminar el alimento
+
+  /consumos:
+    post:
+      summary: Registrar un consumo
+      tags:
+        - Flask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                alimentoID:
+                  type: integer
+                usuarioID:
+                  type: integer
+                cantidad:
+                  type: number
+                calorias:
+                  type: number
+      responses:
+        '201':
+          description: Consumo registrado exitosamente
+        '400':
+          description: Error al registrar el consumo
+
+  /consumos/usuario/{usuarioID}:
+    get:
+      summary: Obtener consumos de un usuario
+      tags:
+        - Flask
+      parameters:
+        - in: path
+          name: usuarioID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Consumos obtenidos exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  consumos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        alimento:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            nombreAlimento:
+                              type: string
+                            nutriScore:
+                              type: string
+                        cantidad:
+                          type: number
+                        calorias:
+                          type: number
+                        fechaConsumo:
+                          type: string
+                          format: date-time
+        '404':
+          description: No se encontraron consumos para el usuario
+
+  /consumos/{idConsumo}:
+    delete:
+      summary: Eliminar un registro de consumo
+      tags:
+        - Flask
+      parameters:
+        - in: path
+          name: idConsumo
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Registro de consumo eliminado exitosamente
+        '404':
+          description: Registro de consumo no encontrado
+        '400':
+          description: Error al eliminar el registro de consumo
+
+components:
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único del usuario.
+        nombreUsario:
+          type: string
+          description: Nombre del usuario.
+        email:
+          type: string
+          description: Correo electrónico del usuario.
+        contrasena:
+          type: string
+          description: Contraseña del usuario (encriptada).
+        fechaRegistro:
+          type: string
+          format: date-time
+          description: Fecha de registro del usuario.
+        edad:
+          type: integer
+          description: Edad del usuario.
+
+    Alimento:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único del alimento.
+        nombreAlimento:
+          type: string
+          description: Nombre del alimento.
+        nutriScore:
+          type: string
+          description: Puntuación nutricional del alimento (A-E).
+
+    Consumo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único del registro de consumo.
+        alimentoID:
+          type: integer
+          description: ID del alimento consumido.
+        usuarioID:
+          type: integer
+          description: ID del usuario que realizó el consumo.
+        fechaConsumo:
+          type: string
+          format: date-time
+          description: Fecha y hora del consumo.
+        cantidad:
+          type: number
+          description: Cantidad del alimento consumido (en unidades relevantes, como gramos o piezas).
+        calorias:
+          type: integer
+          description: Calorías del consumo.

@@ -1,73 +1,143 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(120deg, #b3ffab, #12fff7);
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  h1 {
-    color: #34495e;
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .login-container {
-    width: 400px;
-    padding: 40px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .login-container img {
-    width: 100px; /* Tamaño del logo */
-    margin-bottom: 20px;
-  }
-  
-  input[type="text"], input[type="password"] {
-    width: 100%;
-    padding: 15px;
-    margin: 10px 0 20px 0;
-    display: inline-block;
-    border: none;
-    border-radius: 5px;
-    background: #f2f2f2;
-    font-size: 1.2em;
-  }
-  
-  input[type="submit"] {
-    background-color: #16a085;
-    color: white;
-    padding: 15px;
-    width: 100%;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  input[type="submit"]:hover {
-    background-color: #1abc9c;
-  }
-  
-  .login-container p {
-    margin-top: 20px;
-    font-size: 1em;
-  }
-  
-  .login-container a {
-    color: #16a085;
-    text-decoration: none;
-  }
-  
-  .login-container a:hover {
-    text-decoration: underline;
-  }
-  
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(120deg, #b3ffab, #12fff7);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+h1 {
+  color: #34495e;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.login-container {
+  width: 400px;
+  padding: 40px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container img {
+  width: 100px; /* Tamaño del logo */
+  margin-bottom: 20px;
+}
+
+input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0 20px 0;
+  display: inline-block;
+  border: none;
+  border-radius: 5px;
+  background: #f2f2f2;
+  font-size: 1.2em;
+}
+
+input[type="submit"] {
+  background-color: #16a085;
+  color: white;
+  padding: 15px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+  background-color: #1abc9c;
+}
+
+.login-container p {
+  margin-top: 20px;
+  font-size: 1em;
+}
+
+.login-container a {
+  color: #16a085;
+  text-decoration: none;
+}
+
+.login-container a:hover {
+  text-decoration: underline;
+}
+
+.social-login-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  justify-content: center;
+}
+
+.social-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 50px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  font-size: 1.2em;
+}
+
+.social-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.social-btn:active {
+  transform: scale(1);
+}
+
+.social-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.google-btn {
+  background-color: #4285F4;
+  color: white;
+  font-weight: bold;
+}
+
+.google-btn:hover {
+  background-color: #357ae8;
+}
+
+.github-btn {
+  background-color: #333;
+  color: white;
+  font-weight: bold;
+}
+
+.github-btn:hover {
+  background-color: #444;
+}
+
+p {
+  margin-top: 20px;
+}
+
+a {
+  text-decoration: none;
+  color: #4CAF50;
+}
+
+a:hover {
+  text-decoration: underline;
+}

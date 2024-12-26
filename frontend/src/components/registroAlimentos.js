@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import '../styles/registroAlimentos.css';
 
 const RegistroAlimentos = () => {
@@ -22,10 +22,8 @@ const RegistroAlimentos = () => {
     return null;
   };
 
-  const generateUniqueId = () => {
-    const timestamp = new Date().getTime();
-    const randomNum = Math.floor(Math.random() * 1000000);
-    return `${timestamp}-${randomNum}`;
+  const getToken = () => {
+    return localStorage.getItem('authToken') || '';
   };
 
   const handleSearch = async (event) => {
@@ -98,6 +96,7 @@ const RegistroAlimentos = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`,
         },
         body: JSON.stringify(dataConsumo),
       });
@@ -116,6 +115,7 @@ const RegistroAlimentos = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`,
         },
       });
 
@@ -142,6 +142,7 @@ const RegistroAlimentos = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`,
         },
         body: JSON.stringify(dataAlimento),
       });
@@ -161,6 +162,7 @@ const RegistroAlimentos = () => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`,
         },
       });
 
