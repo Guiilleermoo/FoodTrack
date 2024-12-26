@@ -41,8 +41,8 @@ Las dependencias necesarias están gestionadas dentro de cada servicio mediante 
 Si aún no has clonado el repositorio, puedes hacerlo con el siguiente comando:
 
 ```bash
-git clone <url-del-repositorio>
-cd <directorio-del-repositorio>
+git clone https://github.com/Guiilleermoo/FoodTrack.git
+cd FoodTrack
 ```
 
 ### Paso 2: Construir y levantar los servicios con Docker Compose
