@@ -67,6 +67,76 @@ paths:
                   message:
                     type: string
                     example: Credenciales invalidas
+
+  /auth/google/login:
+    get:
+      summary: Inicia el proceso de autenticación con Google.
+      tags:
+        - Flask
+      responses:
+        '302':
+          description: Redirección a la URL de autenticación de Google.
+
+  /auth/google/callback:
+    get:
+      summary: Maneja la callback de Google después de la autenticación.
+      tags:
+        - Flask
+      parameters:
+        - in: query
+          name: code
+          required: true
+          schema:
+            type: string
+          description: Código de autorización recibido de Google.
+      responses:
+        '302':
+          description: Redirección al frontend con el token JWT en la URL.
+        '400':
+          description: Error en la autenticación con Google.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Error en la autenticación con Google.
+
+  /auth/github/login:
+    get:
+      summary: Inicia el proceso de autenticación con GitHub.
+      tags:
+        - Flask
+      responses:
+        '302':
+          description: Redirección a la URL de autenticación de GitHub.
+
+  /auth/github/callback:
+    get:
+      summary: Maneja la callback de GitHub después de la autenticación.
+      tags:
+        - Flask
+      parameters:
+        - in: query
+          name: code
+          required: true
+          schema:
+            type: string
+          description: Código de autorización recibido de GitHub.
+      responses:
+        '302':
+          description: Redirección al frontend con el token JWT en la URL.
+        '400':
+          description: Error en la autenticación con GitHub.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Error en la autenticación con GitHub.
                     
   /usuarios:
     post:
